@@ -1,0 +1,7 @@
+#!/bin/bash
+
+sabre pe -c -f /usr/users/aiyesa/geno_fastq_data/fastq/2023_data/M005083-Plate8_S136_L004_R1_001.fastq.gz \
+-r /usr/users/aiyesa/geno_fastq_data/fastq/2023_data/M005083-Plate8_S136_L004_R2_001.fastq.gz \
+-b /usr/users/aiyesa/geno_fastq_data/fastq/2023_data/second_bcode.txt \
+-u /usr/users/aiyesa/geno_fastq_data/fastq/2023_data/demultiplexed_2023_samples/unknown_barcode8f_33_64.fastq \
+-w /usr/users/aiyesa/geno_fastq_data/fastq/2023_data/demultiplexed_2023_samples/unknown_barcode8r_33_64.fastq

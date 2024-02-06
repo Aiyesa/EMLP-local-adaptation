@@ -1,0 +1,15 @@
+#!/bin/bash
+#SBATCH -p medium
+#SBATCH -t 48:00:00
+#SBATCH -o loop_output.out
+#SBATCH -c 8
+#SBATCH -n 16
+#SBATCH -N 2
+
+cd /usr/users/aiyesa/geno_fastq_data/fastq/2023_data/demultiplexed_2023_samples/plate-3/new_32
+
+sabre pe -c -f /usr/users/aiyesa/geno_fastq_data/fastq/2023_data/M005083-Plate8_S136_L005_R1_001.fastq.gz \
+-r /usr/users/aiyesa/geno_fastq_data/fastq/2023_data/M005083-Plate8_S136_L005_R2_001.fastq.gz \
+-b /usr/users/aiyesa/geno_fastq_data/fastq/2023_data/third_bcode.txt \
+-u /usr/users/aiyesa/geno_fastq_data/fastq/2023_data/demultiplexed_2023_samples/unknown_barcode8f_65_96.fastq \
+-w /usr/users/aiyesa/geno_fastq_data/fastq/2023_data/demultiplexed_2023_samples/unknown_barcode8r_65_96.fastq
