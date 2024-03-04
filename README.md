@@ -1,2 +1,2 @@
-# Variant-calling
-Variant-calling pipelline from demultiplexing to final filtering. This is part of my PhD project. I made this documentation for public use and data reproducibility.
+# EMLP diversity and local adaptation
+This study characterized the genetic structure of 333 individual plants from 40 European maize landrace populations (EMLPs) using 152671 SNP markers to identify genetic groups and genetic differentiation among groups. It explores the geographical properties of the population to underscore diversity patterns and genomic regions under selection for local adaptation.
