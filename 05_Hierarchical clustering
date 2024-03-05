@@ -1,0 +1,37 @@
+##############################################################
+## 1. Identify optimal number of clusters using Gapstatistics
+##############################################################
+
+library(cluster)
+library(FactoMineR)
+library(factoextra)
+
+snp_dist <- read.table("RD_matrix_152k.txt")#
+
+k <- c(2:10) ## create range of possible cluster(k) numbers
+
+set.seed(333)
+gap.statistics <- clusGap(snp_dist, FUN = kmeans, K.max = max(k), B = 700)
+fviz_gap_stat(gap.statistics)
+
+
+##############################################################################
+## 2. Hclust to view hierarchy and observe the clustering of identified groups
+##############################################################################
+
+library(dplyr)
+library(ape)
+
+fit <- hclust(snp_dist, method = "ward.D2")
+nclus <- 5  # number of optimum groupings from Gapstatistics
+color <- c('red', "#CEDF91" ,'green', 'blue', "purple")
+color_list <- rep(color,nclus/length(color))
+clus=cutree(fit,nclus)
+hclust_df <- as.data.frame(clus)
+hclust_df <- data.frame(Original_names = rownames(snpdata_t), hclust_df)
+
+pop_info <- read.table("population_info.txt")
+hclust_df <- hclust_df %>% left_join(pop_info, by = "Original_names")
+
+plot(as.phylo.hclust(fit), type='fan', tip.color=color_list[hclust_df$clus], 
+     label.offset=1, no.margin=TRUE, cex=0.70, show.node.label = TRUE)
