@@ -1,6 +1,4 @@
-##################################################################################
 ## 1. Perform pairwise genetic differences between individuals within population
-##################################################################################
 
 library(reshape2)
 library(ggplot2)
