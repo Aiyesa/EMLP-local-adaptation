@@ -1,1 +1,48 @@
 
+## 1. Perform pairwise genetic differences between individuals within population
+
+library(reshape2
+
+RD <- read.table("RD_matrix_333.txt")
+pop_info <- read.table("population_structure_k5.txt")
+rownames(RD) <- colnames(RD) <- pop_info$Individuals
+
+poptn <- unique(pop_info$Populations)
+pairwise <- NULL
+
+for (i in 1:40) {
+
+  tryCatch({print(i)
+
+    ind <- pop_info[pop_info$Populations == poptn[i], ]$Individuals # subset individuals in a population
+    pop_RD <- RD[rownames(RD) %in% ind, colnames(RD) %in% ind] # select their pairwise genetic distance
+    pop_RD[upper.tri(pop_RD)] <- 0 
+    pop_RD <- data.frame(sample = colnames(pop_RD), pop_RD)
+    pair <- melt(pop_RD)
+    pair <- subset(pair, value != 0)
+    pair2 <- data.frame(pair, 
+                        Populations = unique(pop_info[pop_info$Populations == poptn[i], ]$Populations),
+                        Group = unique(pop_info[pop_info$Populations == poptn[i], ]$clus))
+    pairwise <- rbind(pairwise, pair2)
+
+  }, error = function(e){})
+}
+
+pop_df <- NULL
+
+for (i in 1:40) {
+  # mean of MAF and Ho for each population
+  pop <- data.frame(Population = poptn[i],
+                    pi = mean(pairwise[pairwise$Populations == poptn[i], ]$value),
+                    Latitude = mean(pop_info[pop_info$Populations == poptn[i], c("Latitude")]),
+                    Elevation = mean(pop_info[pop_info$Populations == poptn[i], c("Elevation")]),
+                    Longitude = mean(pop_info[pop_info$Populations == poptn[i], c("Longitude")]),
+                    Cluster = unique(pop_info[pop_info$Populations == poptn[i], c("clus")]))
+  
+  #rbind for all population
+  pop_df <- rbind(pop_df, pop)
+  
+}
+
+#write.table(pairwise, "pairwise_RD.txt")
+
