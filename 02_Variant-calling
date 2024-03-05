@@ -1,14 +1,9 @@
 # Variant calling
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
+----------------------------------------------------------------------------------------------------------------------------------------------
 ## Step 1: Demultiplexing
 
-Demultiplexing of pooled samples using sabre. Barcode files should be prepared as described in https://github.com/najoshi/sabre. 32 samples per file, 3 paired end files for each plate = 6 files per plate.
-
-```{bash}
+# Demultiplexing of pooled samples using sabre. Barcode files should be prepared as described in https://github.com/najoshi/sabre. 32 samples per file, 3 paired end files for each plate = 6 files per plate.
 
 #!/bin/bash
 ##SBATCH -p medium
@@ -22,11 +17,9 @@ sabre pe -c -f /usr/users/aiyesa/geno_fastq_data/fastq/2023_data/M005083-Plate8_
 -u /path/to/raw_data/demultiplexed_samples/unknown_barcode8f_1_32.fastq \
 -w /path/to/raw_datademultiplexed_samples/unknown_barcode8r_1_32.fastq
 
-```
+------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Step 2: Read quality assessment
-
-```{bash}
 
 #!/bin/bash
 
@@ -36,11 +29,9 @@ fastqc -t 8 /path/to/demultiplexed_samples/zipfiles/*.gz -o fastqc_result
 
 # multiqc *.gz ## using multiqc to aggregate output from fastqc output
 
-```
+------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Step 3: Trimming adapters
-
-```{bash}
 
 #!/bin/bash
 #SBATCH -J fastq_trimming
@@ -66,11 +57,9 @@ do
 	cutadapt -a AGATCGGAAGAGC -A AGATCGGAAGAGC --core 0 $FORWARD $REVERSE -o $OUTFOR -p $OUTREV ;
 done
 
-```
+------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Step 4: Mapping to reference genom
-
-```{bash}
 
 #!/bin/bash
 #SBATCH --job-name=alignment
@@ -119,11 +108,9 @@ done
 
 echo "Batch completed successfully."
 
-```
+------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Step 5: Variant calling
-
-```{bash}
 
 #!/bin/bash
 #SBATCH --job-name=variant-calling
@@ -145,13 +132,11 @@ bcftools mpileup -a AD,DP,SP -Ou -f $REF \
 /path/to/working_dir/sorted_bamfiles/*_sorted.bam | bcftools call -f GQ,GP \
 -mO z -o zea_individual_plant_geno.vcf.gz
 
-```
+------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Step 6: FIltering 
 
 ### Filtering parameters include missingness of 20%, minor allele frequency of 0.01, QUAL score of 30, min depth of 5, and, maximum depth of 500.
-
-```{bash}
 
 #!/bin/bash
 #SBATCH --job-name=vcf_filtering
@@ -183,5 +168,5 @@ vcftools --gzvcf "$VCF_IN" \
     --min-meanDP "$MIN_DEPTH" --max-meanDP "$MAX_DEPTH" \
     --minDP "$MIN_DEPTH" --maxDP "$MAX_DEPTH" --recode --stdout | gzip -c > "$VCF_OUT"
 
-```
+------------------------------------------------------------------------------------------------------------------------------------------------
 
