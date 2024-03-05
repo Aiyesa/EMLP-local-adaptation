@@ -1,6 +1,6 @@
-##################################################################################
+------------------------------------------------------------------------------------------------------------------------------------------------
 ## 2. Founder event
-##################################################################################
+
 library(ggplot2)
 
 pop_info <- read.table("population_structure_k5.txt")
@@ -21,7 +21,8 @@ for (i in 1:40) {
   
 }
 
-## plot regression of π with latitude and elevation 
+------------------------------------------------------------------------------------------------------------------------------------------------
+## plot regression of π with latitude 
 
 a <- ggplot(pop_df, aes(x = Latitude, y = pi, color = Cluster)) + geom_point(size = 2.5) + 
   theme_classic() +
@@ -34,7 +35,7 @@ a <- ggplot(pop_df, aes(x = Latitude, y = pi, color = Cluster)) + geom_point(siz
            legend.title=element_blank()) +
      geom_smooth(method = lm,se=T,aes(group=1),color='steelblue')
 
-
+# for elevation
 b <- ggplot(pop_df, aes(x = Elevation, y = pi, color = Cluster)) + geom_point(size = 2.2) +    
      theme_classic() +
      labs(y = "π", x = "Elevation (m)") + 
