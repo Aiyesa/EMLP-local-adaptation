@@ -1,0 +1,56 @@
+#### Analysis of Molecular Variance (AMOVA)
+----------------------------------------------------------------------------------------------
+## Load libraries
+library(poppr)
+library(tidyr)
+library(ggplot2)
+
+----------------------------------------------------------------------------------------------
+## Fetch and prepare data
+snpdata <- read.table("snp_numeric_data.txt")
+RD <- read.table("RD_matrix_152k.txt") # 
+pop_info <- read.table("population_structure_info.txt")
+
+geno_genind <- df2genind(t(snpdata), ploidy = 2, ind.names = pop_info$Individuals, 
+                        pop = pop_info$Populations, strata  = pop_info[,c(1:3)], 
+                        hierarchy = ~Groups/Populations, sep = "")
+
+other(geno_genind) <- geno_genind$strata
+agc <- as.genclone(geno_genind)
+agc
+----------------------------------------------------------------------------------------------
+## Run AMOVA 
+amova <- poppr.amova(agc, ~Groups/Populations, 
+                         dist = as.dist(RD), 
+                         clonecorrect = F, 
+                         within = F,
+                         method = "ade4")
+
+amova$componentsofcovariance$`%`[1]
+
+----------------------------------------------------------------------------------------------
+## Create data frame for AMOVA result
+amova_table <- data.frame(Between_groups = amova$componentsofcovariance$`%`[1],
+                    Between_populations_within_groups = amova$componentsofcovariance$`%`[2],
+                    Between_individuals_within_populations = amova$componentsofcovariance$`%`[3])
+
+amova_long <- amova_table %>% pivot_longer(cols = c(1,2,3)) 
+colnames(amova_long) <- c("Molecular_Variation", "Percentage")
+amova_long$Percentage <- round(amova_long$Percentage, 2)
+
+count.data <- amova_long %>%
+  arrange(desc(Molecular_Variation)) %>%
+  mutate(lab.ypos = cumsum(Percentage) - 0.5*Percentage)
+count.data
+
+----------------------------------------------------------------------------------------------
+## Plot pie-chart for AMOVA result 
+mycols <- c("#0073C2FF", "#868686FF", "#CD534CFF")
+
+ggplot(count.data, aes(x = "", y = Percentage, fill = Molecular_Variation)) +
+  geom_bar(width = 1, stat = "identity", color = "white") +
+  coord_polar("y", start = 0)+
+  geom_text(aes(y = lab.ypos, label = Percentage), color = "white")+
+  scale_fill_manual(values = mycols) +
+  theme(legend.text=element_text(size=14)) +
+  theme_void()
