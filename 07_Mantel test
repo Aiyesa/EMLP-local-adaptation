@@ -1,0 +1,9 @@
+library(vegan)
+library(ade4)
+gen_mat <- read.table("RD_matrix_152k.txt")
+geo_mat <- read.table("GD_matrix.txt")[,-1]
+
+gendist <- as.dist(gen_mat)
+geodist <- as.dist(geo_mat)
+
+mantel.rtest(geodist, gendist, nrepet = 9999)
