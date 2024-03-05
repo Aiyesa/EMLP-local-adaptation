@@ -1,1 +1,47 @@
+##################################################################################
+## 2. Founder event
+##################################################################################
+library(ggplot2)
 
+pop_info <- read.table("population_structure_k5.txt")
+pairwise <- read.table( "pairwise_RD.txt")
+
+pop_df <- NULL
+for (i in 1:40) {
+  # mean of pairwise distance (pi/π) for each population
+  pop <- data.frame(Population = poptn[i],
+                    pi = mean(pairwise[pairwise$Populations == poptn[i], ]$value),
+                    Latitude = mean(pop_info[pop_info$Populations == poptn[i], c("Latitude")]),
+                    Elevation = mean(pop_info[pop_info$Populations == poptn[i], c("Elevation")]),
+                    Longitude = mean(pop_info[pop_info$Populations == poptn[i], c("Longitude")]),
+                    Cluster = unique(pop_info[pop_info$Populations == poptn[i], c("clus")]))
+  
+  #rbind for all population
+  pop_df <- rbind(pop_df, pop)
+  
+}
+
+## plot regression of π with latitude and elevation 
+
+a <- ggplot(pop_df, aes(x = Latitude, y = pi, color = Cluster)) + geom_point(size = 2.5) + 
+  theme_classic() +
+     labs(y = "π", x = "Latitude (°N)") + 
+     theme(axis.text = element_text(size = 12),
+           axis.title = element_text(size = 14),
+           legend.text=element_text(size=9),
+           legend.justification=c(1,1),
+           legend.position= c(0.99,0.9999),
+           legend.title=element_blank()) +
+     geom_smooth(method = lm,se=T,aes(group=1),color='steelblue')
+
+
+b <- ggplot(pop_df, aes(x = Elevation, y = pi, color = Cluster)) + geom_point(size = 2.2) +    
+     theme_classic() +
+     labs(y = "π", x = "Elevation (m)") + 
+     theme(axis.text = element_text(size = 12),
+           axis.title = element_text(size = 14),
+           legend.text=element_text(size=9),
+           legend.justification=c(1,1),
+           legend.position= "none",
+           legend.title=element_blank()) +
+     geom_smooth(method = lm,se=T,aes(group=1),color='steelblue')
