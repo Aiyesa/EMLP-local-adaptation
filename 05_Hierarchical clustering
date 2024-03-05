@@ -1,6 +1,5 @@
-##############################################################
-## 1. Identify optimal number of clusters using Gapstatistics
-##############################################################
+------------------------------------------------------------------------------------------------------------------------------------------------
+## 1. Identify the optimal number of clusters using Gapstatistics
 
 library(cluster)
 library(FactoMineR)
@@ -14,10 +13,8 @@ set.seed(333)
 gap.statistics <- clusGap(snp_dist, FUN = kmeans, K.max = max(k), B = 700)
 fviz_gap_stat(gap.statistics)
 
-
-##############################################################################
+------------------------------------------------------------------------------------------------------------------------------------------------
 ## 2. Hclust to view hierarchy and observe the clustering of identified groups
-##############################################################################
 
 library(dplyr)
 library(ape)
@@ -35,3 +32,4 @@ hclust_df <- hclust_df %>% left_join(pop_info, by = "Original_names")
 
 plot(as.phylo.hclust(fit), type='fan', tip.color=color_list[hclust_df$clus], 
      label.offset=1, no.margin=TRUE, cex=0.70, show.node.label = TRUE)
+------------------------------------------------------------------------------------------------------------------------------------------------
