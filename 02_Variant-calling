@@ -3,7 +3,8 @@
 ----------------------------------------------------------------------------------------------------------------------------------------------
 ## Step 1: Demultiplexing
 
-# Demultiplexing of pooled samples using sabre. Barcode files should be prepared as described in https://github.com/najoshi/sabre. 32 samples per file, 3 paired end files for each plate = 6 files per plate.
+# Demultiplexing of pooled samples using sabre. Barcode files should be prepared as described in https://github.com/najoshi/sabre. 
+# 32 samples per file, 3 paired end files for each plate = 6 files per plate.
 
 #!/bin/bash
 ##SBATCH -p medium
@@ -24,6 +25,7 @@ sabre pe -c -f /usr/users/aiyesa/geno_fastq_data/fastq/2023_data/M005083-Plate8_
 #!/bin/bash
 
 module load FASTQC/0.11.4
+module load multiqc
 
 fastqc -t 8 /path/to/demultiplexed_samples/zipfiles/*.gz -o fastqc_result
 
@@ -31,7 +33,7 @@ fastqc -t 8 /path/to/demultiplexed_samples/zipfiles/*.gz -o fastqc_result
 
 ------------------------------------------------------------------------------------------------------------------------------------------------
 
-## Step 3: Trimming adapters
+## Step 3: Trimming adapter
 
 #!/bin/bash
 #SBATCH -J fastq_trimming
@@ -40,6 +42,7 @@ fastqc -t 8 /path/to/demultiplexed_samples/zipfiles/*.gz -o fastqc_result
 #SBATCH -t 2-00:00
 #SBATCH -n 16
 
+module load cutadapt
 
 INDS=($(for i in /path/to/demultiplexed_samples/zipfiles/*_R1.fastq.gz; do echo $(basename "$i" _R1.fastq.gz); done))
 
