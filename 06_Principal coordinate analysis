@@ -1,0 +1,38 @@
+## Using genetic distance matrix
+
+RD <- read.table("RD_matrix_152k.txt")
+RD <- as.matrix(RD)
+
+### pcoa function
+len.PCoA		<- 10
+
+PCoA <- function(rd,len.PCoA){
+	RD.cmd 	<- cmdscale(as.dist(rd), k = len.PCoA, eig = T, add = T)
+	RD.cmd.PC.v	<- RD.cmd$eig[1:len.PCoA] / sum(RD.cmd$eig)
+	apply(RD.cmd$points, 2, range)
+	res <- list("Component" = RD.cmd$points, "Fraction"=RD.cmd.PC.v)
+	return(res)
+}
+
+PCoA.All <- PCoA(RD,len.PCoA)
+
+comp <- PCoA.All$Component
+Frac <- PCoA.All$Fraction
+
+pop_info <- read.table("population_structure_info.txt")
+PCoA_All2 <- pop_info %>% left_join(comp, by = "Individuals")
+
+## Plot PCoA for first two PCos 
+pcoa <- ggplot(PCoA_All2, aes(x = PCo_1, y = PCo_2, color = PCoA_All2$Country)) + geom_point(size = 0.6) +
+     theme_classic() + 
+     labs(x = "PCo1 (11.4%)", y = "PCo2 (6.7%)") +
+      theme(axis.text = element_text(size = 10),
+           axis.title = element_text(size = 13),
+           legend.text=element_text(size=10),
+           legend.justification=c(1,1),
+           #legend.position=c(0.99,0.499),
+           legend.title=element_blank()) +
+    scale_x_reverse()
+
+pcoa
+
