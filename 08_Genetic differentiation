@@ -1,0 +1,18 @@
+library('hierfstat')
+
+pop_info <- read.table("Population_structure_info.txt")
+pop_info <- pop_info[order(pop_info[,1]), ] # sort individuals
+
+snpdata <- read.table("snp_numeric_data.txt")
+snpdata_t <- t(snpdata)
+snp_pop <- cbind(pop_info$clus, snpdata_t) # merge snp and group info together
+colnames(snppop)[1] <- "Group"
+
+# run Fst
+fst_res <- pairwise.WCfst(snppop[,-c(2)],diploid=TRUE)
+fst_res[upper.tri(fst_res, diag = T)] <- "NA"
+fst_res_melt <- melt(fst_res)
+ 
+fst_res_melt <- subset(fst_res_melt, value != "NA")
+colnames(fst_res_melt) <- c("Group_1", "Group_2", "Fst")
+fst_res_melt$Fst <- round(as.numeric(fst_res_melt$Fst), 3)
