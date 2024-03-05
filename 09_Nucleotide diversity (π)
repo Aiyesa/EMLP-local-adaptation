@@ -1,15 +1,16 @@
-
+##################################################################################
 ## 1. Perform pairwise genetic differences between individuals within population
+##################################################################################
 
-library(reshape2
+library(reshape2)
+library(ggplot2)
 
 RD <- read.table("RD_matrix_333.txt")
 pop_info <- read.table("population_structure_k5.txt")
+poptn <- unique(pop_info$Populations)
 rownames(RD) <- colnames(RD) <- pop_info$Individuals
 
-poptn <- unique(pop_info$Populations)
 pairwise <- NULL
-
 for (i in 1:40) {
 
   tryCatch({print(i)
@@ -28,21 +29,13 @@ for (i in 1:40) {
   }, error = function(e){})
 }
 
-pop_df <- NULL
+pairwise <- subset(pairwise, value != 0)
 
-for (i in 1:40) {
-  # mean of MAF and Ho for each population
-  pop <- data.frame(Population = poptn[i],
-                    pi = mean(pairwise[pairwise$Populations == poptn[i], ]$value),
-                    Latitude = mean(pop_info[pop_info$Populations == poptn[i], c("Latitude")]),
-                    Elevation = mean(pop_info[pop_info$Populations == poptn[i], c("Elevation")]),
-                    Longitude = mean(pop_info[pop_info$Populations == poptn[i], c("Longitude")]),
-                    Cluster = unique(pop_info[pop_info$Populations == poptn[i], c("clus")]))
-  
-  #rbind for all population
-  pop_df <- rbind(pop_df, pop)
-  
-}
+## check distribution of π across population and group
+ggplot(pair, aes(x= reorder(Populations, -value), y = value, fill = Group)) + geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 75))
 
-#write.table(pairwise, "pairwise_RD.txt")
+write.table(pairwise, "pairwise_RD.txt")
+
+
 
