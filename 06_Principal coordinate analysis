@@ -1,3 +1,4 @@
+------------------------------------------------------------------------------------------------------------------------------------------------
 ## Using genetic distance matrix
 
 RD <- read.table("RD_matrix_152k.txt")
@@ -22,8 +23,10 @@ Frac <- PCoA.All$Fraction
 pop_info <- read.table("population_structure_info.txt")
 PCoA_All2 <- pop_info %>% left_join(comp, by = "Individuals")
 
-## Plot PCoA for first two PCos 
-pcoa <- ggplot(PCoA_All2, aes(x = PCo_1, y = PCo_2, color = PCoA_All2$clus)) + geom_point(size = 0.6) +
+------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Plot PCoA for first three PCos 
+pcoa12 <- ggplot(PCoA_All2, aes(x = PCo_1, y = PCo_2, color = PCoA_All2$clus)) + geom_point(size = 0.6) +
      theme_classic() + 
      labs(x = "PCo1 (11.4%)", y = "PCo2 (6.7%)") +
       theme(axis.text = element_text(size = 10),
@@ -34,5 +37,15 @@ pcoa <- ggplot(PCoA_All2, aes(x = PCo_1, y = PCo_2, color = PCoA_All2$clus)) + g
            legend.title=element_blank()) +
     scale_x_reverse()
 
-pcoa
+pcoa13 <- ggplot(PCoA_All2, aes(x = PCo_1, y = PCo_3, color = PCoA_All2$Country)) + geom_point(size = 0.6) +
+     theme_classic() + 
+     labs(x = "PCo1 (11.4%)", y = "PCo3 (4.6%)") +
+      theme(axis.text = element_text(size = 10),
+           axis.title = element_text(size = 13),
+           legend.text=element_text(size=10),
+           legend.justification=c(1,1),
+           #legend.position=c(0.99,0.499),
+           legend.title=element_blank()) +
+    scale_x_reverse()
 
+------------------------------------------------------------------------------------------------------------------------------------------------
