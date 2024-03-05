@@ -1,6 +1,4 @@
-# variant calling markdown
-
----
+# Variant calling
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
