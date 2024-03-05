@@ -23,7 +23,7 @@ pop_info <- read.table("population_structure_info.txt")
 PCoA_All2 <- pop_info %>% left_join(comp, by = "Individuals")
 
 ## Plot PCoA for first two PCos 
-pcoa <- ggplot(PCoA_All2, aes(x = PCo_1, y = PCo_2, color = PCoA_All2$Country)) + geom_point(size = 0.6) +
+pcoa <- ggplot(PCoA_All2, aes(x = PCo_1, y = PCo_2, color = PCoA_All2$clus)) + geom_point(size = 0.6) +
      theme_classic() + 
      labs(x = "PCo1 (11.4%)", y = "PCo2 (6.7%)") +
       theme(axis.text = element_text(size = 10),
