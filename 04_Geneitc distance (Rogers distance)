@@ -1,0 +1,25 @@
+
+## write function for roger distance matrix (Formular from Chu et al., 2017 - )
+
+RD <- function(Marker){
+    len.geno <- dim(Marker)[2] 
+    name.geno <- colnames(Marker)
+    RD.matrix <- matrix(0,len.geno,len.geno)
+    for(j in 1:len.geno){
+        Marker[,j] <- as.numeric(Marker[,j])
+    }
+    for(i in 1:len.geno){
+        for (j in 1:len.geno){
+            RD.matrix[i,j]  <- mean(abs(Marker[,i]-Marker[,j])/2,na.rm=TRUE)
+            }
+    }
+    colnames(RD.matrix)     <- name.geno
+    rownames(RD.matrix)     <- name.geno
+    return(RD.matrix)
+}
+
+
+## run function on data m*n where row(m) is the number of markers and col(n) is the number of samples
+RD <- RD(as.matrix(snpdata))
+
+write.table(RD, "RD_matrix_152k.txt")
