@@ -1,5 +1,5 @@
 
-## write function for roger distance matrix (Formular from Chu et al., 2017 - )
+## Function for Roger distance matrix (Formular from Chu et al., 2017 - )
 
 RD <- function(Marker){
     len.geno <- dim(Marker)[2] 
@@ -20,6 +20,7 @@ RD <- function(Marker){
 
 
 ## run function on data m*n where row(m) is the number of markers and col(n) is the number of samples
+snpdata <- read.table("snp_numeric_data.txt")[-c(1:10)]
 RD <- RD(as.matrix(snpdata))
 
 write.table(RD, "RD_matrix_152k.txt")
