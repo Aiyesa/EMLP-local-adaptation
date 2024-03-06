@@ -1,4 +1,4 @@
-library('hierfstat')
+library("hierfstat")
 
 pop_info <- read.table("Population_structure_info.txt")
 pop_info <- pop_info[order(pop_info[,1]), ] # sort individuals
