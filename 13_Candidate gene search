@@ -1,1 +1,32 @@
 
+
+library(dplyr)
+
+gwas_res <- read.table("GWAS_result_10.05.23_with_CV_und_KI_2.txt")
+map <- read.table("map_152k.txt")
+map <- as.data.frame(map)
+
+gwas_sig <- subset(gwas_res[,c(1,2,3,4)], Latitude <= 0.00001) 
+colnames(gwas_sig)[1] <- colnames(map)[1] <- "SNP"
+gwas_sig_map <- left_join(gwas_sig, map, by = "SNP")
+
+gwas_sig_pos <- gwas_sig_map %>% mutate(start = Position - 50000) %>% mutate(end = Position + 50000) ## 50kb LD-decay
+gwas_sig_pos <- gwas_sig_pos[, c(1, 4:8)]
+
+#write.table(gwas_sig_pos, "Lat_sig_start_end_pos.txt")
+
+gene_info <- read.table("gff_table.txt")
+gene_info <- subset(gene_info, gene_info$genes == "gene")
+gwas_sig_pos <- read.table("Lat_sig_start_end_pos.txt")
+
+chr <- unique(ft_pos$CHROM)
+candidate_genes <- NULL
+
+for (i in 1:length(chr)) {
+  chrom <- gene_info[gene_info$Chrom == chr[i], ]
+  ft_chrom <- ft_pos[ft_pos$CHROM == chr[i], ]
+  candidate <- chrom[chrom$start >= ft_chrom$start & chrom$end <= ft_chrom$end, ]
+  candidate_genes <- rbind(candidate_genes, candidate)
+}
+
+#write.table(candidate_genes, "Lat_candidate_genes.txt")
