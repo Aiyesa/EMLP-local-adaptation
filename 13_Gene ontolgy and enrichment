@@ -1,1 +1,33 @@
+library(gprofiler2)
+Lat_genes <- read.table("Lat_candidate_genes.txt")
+
+## set 
+chrom <- unique(Lat_genes$Chrom)
+go_df <- NULL
+
+for (i in 1:length(chrom)) {
+  df_genes <- subset(Lat_genes, Chrom == chrom[i])
+  gene_models <- df_genes$gene_model
+  for (g in 1:length(gene_models)) {
+    tryCatch({print(i,g)
+      gost.res <- gost(gene_models[g], organism = "zmays",
+                       #correction_method = "fdr", 
+                       significant = FALSE)
+      mygostplot <- gostplot(gost.res, interactive = F, capped = T)
+      go_terms <- data.frame(Chrom = unique(df_genes$Chrom),
+                           genes = gene_models[g],
+                           start = df_genes[df_genes$gene_model == gene_models[g], 
+                                            c("start")],
+                           end = df_genes[df_genes$gene_model == gene_models[g], c("end")],
+                           term_size = mygostplot$data$term_id,
+                           term_source = mygostplot$data$source,
+                           term_name = mygostplot$data$term_name)
+      go_df <- rbind(go_df, go_terms)
+    }, error=function(e){})
+  }                  
+}
+
+library(dplyr)
+go_df2 <- distinct(go_df, go_df$genes, .keep_all = TRUE)
+#write.table(go_df2, "Lat_candidate_genes_functions.txt")
 
