@@ -5,11 +5,11 @@ RD <- read.table("RD_matrix_152k.txt")
 RD <- as.matrix(RD)
 
 ### pcoa function
-len.PCoA		<- 10
+len.PCoA <- 10
 
 PCoA <- function(rd,len.PCoA){
 	RD.cmd 	<- cmdscale(as.dist(rd), k = len.PCoA, eig = T, add = T)
-	RD.cmd.PC.v	<- RD.cmd$eig[1:len.PCoA] / sum(RD.cmd$eig)
+	RD.cmd.PC.v <- RD.cmd$eig[1:len.PCoA] / sum(RD.cmd$eig)
 	apply(RD.cmd$points, 2, range)
 	res <- list("Component" = RD.cmd$points, "Fraction"=RD.cmd.PC.v)
 	return(res)
