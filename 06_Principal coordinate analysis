@@ -23,6 +23,8 @@ Frac <- PCoA.All$Fraction
 pop_info <- read.table("population_structure_info.txt")
 PCoA_All2 <- pop_info %>% left_join(comp, by = "Individuals")
 
+write.table(PCoA_All2, "PCo_results.txt")
+
 ------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## Plot PCoA for first three PCos 
