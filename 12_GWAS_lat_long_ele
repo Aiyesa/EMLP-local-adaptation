@@ -22,6 +22,7 @@ colnames(gen)[1] <- colnames(phe)[1] <- c("Taxa")
 map <- read.table("map_152k.txt")
 colnames(map) <- c("Name", "Chromosome", "Position")
 
+PCo <- read.table("PCo_results.txt")
 CV <- PCo[,c(1:3)]  ## first three principal coordinates 
 
 #GD <- read.table("RD_matrix_152k.txt")
