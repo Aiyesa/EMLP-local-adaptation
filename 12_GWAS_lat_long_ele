@@ -1,1 +1,43 @@
+library("bigmemory")
+library("biganalytics")
+library("compiler") 
+library(Matrix)
+library(GAPIT)
 
+## load pheno, geno, map, Kinship, and PC data ---------------------------------------------
+
+geo_prop <- read.table("population_structure_k5.txt") 
+phe <- geo_prop[,c(1,9,10,11)]     # select latitude, longitude, and elevation
+#phe$Individuals <- gsub("_", "-", phe$Individuals)
+
+# scale phe data
+for (i in 2:4) {
+  phe[,i] <- scale(phe[,i])
+}
+
+geno <- read.table("snp_numeric_mvp.txt")
+gen <- as.data.frame(t(geno))
+colnames(gen)[1] <- colnames(phe)[1] <- c("Taxa")
+
+map <- read.table("map_152k.txt")
+colnames(map) <- c("Name", "Chromosome", "Position")
+
+CV <- PCo[,c(1:3)]  ## first three principal coordinates 
+
+#GD <- read.table("RD_matrix_152k.txt")
+#KI <- 1 - GD
+#rownames(KI) <- colnames(KI) <- phe$Taxa
+
+
+## Run GWAS with FarmCPU model ----------------------------------------------------------
+myFarmCPU <- FarmCPU(
+Y <- phe[,c(1,4)],
+  GD=gen,
+  GM=map,
+  CV=CV,
+  #KI = KI,
+  #PCA.total=3,
+  #model = c("MLM")
+)
+
+GWAS_res <- myFarmCPU$GWAS
