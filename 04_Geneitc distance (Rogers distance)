@@ -24,3 +24,4 @@ snpdata <- read.table("snp_numeric_data.txt")[-c(1:10)]
 RD <- RD(as.matrix(snpdata))
 
 write.table(RD, "RD_matrix_152k.txt")
+
